@@ -25,26 +25,27 @@ namespace FaceAddon
             if (comp.facetype == null && faceprops.faceTypeDefs != null && faceprops.faceTypeDefs.Any())
             {
                 int sumweight = 0;
-                List<int> idweights = new List<int>();
+                List<(int,FaceTypeDef)> idweights = new List<(int, FaceTypeDef)>();
+                
                 foreach (var ftype in faceprops.faceTypeDefs)
                 {
-                    idweights.Add((sumweight + ftype.randomWeight));
-                    sumweight += ftype.randomWeight;
-                }
-
-                var rand = Verse.Rand.Range(0, sumweight);
-                int id = 0;
-
-                for (var i = 0; i < idweights.Count; i++)
-                {
-                    if (idweights[i] > rand)
+                    if (ftype.requireHeadTypes == null || !ftype.requireHeadTypes.Any() || ftype.requireHeadTypes.Contains(pawn.story.headType))
                     {
-                        id = i;
-                        break;
+                        idweights.Add((sumweight + ftype.randomWeight, ftype));
+                        sumweight += ftype.randomWeight;
                     }
                 }
 
-                comp.facetype = faceprops.faceTypeDefs[id];
+                var rand = Verse.Rand.Range(0, sumweight);
+
+                for (var i = 0; i < idweights.Count; i++)
+                {
+                    if (idweights[i].Item1 > rand)
+                    {
+                        comp.facetype = idweights[i].Item2;
+                        break;
+                    }
+                }
             }
             if (comp.facetype != null)
             {
@@ -69,26 +70,27 @@ namespace FaceAddon
             if (comp.additionalfacetype == null && faceprops.additionalfaceTypeDefs != null && faceprops.additionalfaceTypeDefs.Any())
             {
                 int sumweight = 0;
-                List<int> idweights = new List<int>();
+                List<(int, FaceTypeDef)> idweights = new List<(int, FaceTypeDef)>();
+
                 foreach (var ftype in faceprops.additionalfaceTypeDefs)
                 {
-                    idweights.Add((sumweight + ftype.randomWeight));
-                    sumweight += ftype.randomWeight;
-                }
-
-                var rand = Verse.Rand.Range(0, sumweight);
-                int id = 0;
-
-                for (var i = 0; i < idweights.Count; i++)
-                {
-                    if (idweights[i] > rand)
+                    if (ftype.requireHeadTypes == null || !ftype.requireHeadTypes.Any() || ftype.requireHeadTypes.Contains(pawn.story.headType))
                     {
-                        id = i;
-                        break;
+                        idweights.Add((sumweight + ftype.randomWeight, ftype));
+                        sumweight += ftype.randomWeight;
                     }
                 }
 
-                comp.additionalfacetype = faceprops.additionalfaceTypeDefs[id];
+                var rand = Verse.Rand.Range(0, sumweight);
+
+                for (var i = 0; i < idweights.Count; i++)
+                {
+                    if (idweights[i].Item1 > rand)
+                    {
+                        comp.additionalfacetype = idweights[i].Item2;
+                        break;
+                    }
+                }
             }
             if (comp.additionalfacetype != null)
             {
@@ -123,33 +125,36 @@ namespace FaceAddon
 
             WInkAndBlink = new WinkAndBlinkHandler(comp.facetype.tickBlinkMin, comp.facetype.tickBlinkMax, comp.facetype.winkChance, comp.facetype.blinkDurationMin, comp.facetype.blinkDurationMax);
 
-            pawnSkinColor = pawn.story.SkinColor;
-            pawnHairColor = pawn.story.HairColor;
+            pawnSkinColor = pawn.story?.SkinColor ?? Color.white;
+            pawnHairColor = pawn.story?.HairColor ?? Color.white;
 
         }
         Color pawnSkinColor;
         Color pawnHairColor;
         public void Update_Normal()
         {
-            WInkAndBlink?.Check(pawn.needs.mood.CurLevel);
+            WInkAndBlink?.Check(pawn.needs?.mood?.CurLevel ?? 0.5f);
 
-            if (pawnSkinColor != pawn.story.SkinColor || pawnHairColor != pawn.story.HairColor)
+            if (pawnSkinColor != (pawn.story?.SkinColor ?? Color.white) || pawnHairColor != (pawn.story?.HairColor ?? Color.white))
             {
                 foreach (var fgs in faceGraphics)
                 {
                     fgs.UpdateAllGraphics();
                 }
-                pawnSkinColor = pawn.story.SkinColor;
-                pawnHairColor = pawn.story.HairColor;
+                pawnSkinColor = pawn.story?.SkinColor ?? Color.white;
+                pawnHairColor = pawn.story?.HairColor ?? Color.white;
             }
         }
 
         public void Update_Rare()
         {
             //CheckAgeSetting();
-            foreach (var fgs in faceGraphics)
+            if (pawn.health != null && pawn.health.hediffSet != null)
             {
-                fgs.Check(pawn.health.hediffSet);
+                foreach (var fgs in faceGraphics)
+                {
+                    fgs.Check(pawn.health.hediffSet);
+                }
             }
         }
 
@@ -218,8 +223,8 @@ namespace FaceAddon
             switch (colorType)
             {
                 case ColorType.White: return Color.white;
-                case ColorType.Skin: return pawn.story.SkinColor;
-                case ColorType.Hair: return pawn.story.HairColor;
+                case ColorType.Skin: return pawn?.story?.SkinColor ?? Color.white;
+                case ColorType.Hair: return pawn?.story?.HairColor ?? Color.white;
             }
 
             return Color.white;
@@ -294,27 +299,32 @@ namespace FaceAddon
             {
                 return custom.Second.MatAt(rot);
             }
-            if (pawn.needs.mood.CurLevel < pawn.GetStatValue(StatDefOf.MentalBreakThreshold, true))
+            if (pawn.needs != null && pawn.needs.mood != null)
             {
-                return aboutToBreak.MatAt(rot);
+                if (pawn.needs.mood.CurLevel < pawn.GetStatValue(StatDefOf.MentalBreakThreshold, true))
+                {
+                    return aboutToBreak.MatAt(rot);
+                }
+                if (pawn.needs.mood.CurLevel < pawn.GetStatValue(StatDefOf.MentalBreakThreshold, true) + 0.05f)
+                {
+                    return onEdge.MatAt(rot);
+                }
+                if (pawn.needs.mood.CurLevel < pawn.mindState.mentalBreaker.BreakThresholdMinor)
+                {
+                    return stressed.MatAt(rot);
+                }
+                if (pawn.needs.mood.CurLevel < 0.65f)
+                {
+                    return neutral.MatAt(rot);
+                }
+                if (pawn.needs.mood.CurLevel < 0.9f)
+                {
+                    return content.MatAt(rot);
+                }
+                return happy.MatAt(rot);
             }
-            if (pawn.needs.mood.CurLevel < pawn.GetStatValue(StatDefOf.MentalBreakThreshold, true) + 0.05f)
-            {
-                return onEdge.MatAt(rot);
-            }
-            if (pawn.needs.mood.CurLevel < pawn.mindState.mentalBreaker.BreakThresholdMinor)
-            {
-                return stressed.MatAt(rot);
-            }
-            if (pawn.needs.mood.CurLevel < 0.65f)
-            {
-                return neutral.MatAt(rot);
-            }
-            if (pawn.needs.mood.CurLevel < 0.9f)
-            {
-                return content.MatAt(rot);
-            }
-            return happy.MatAt(rot);
+
+            return neutral.MatAt(rot);
         }
     }
 

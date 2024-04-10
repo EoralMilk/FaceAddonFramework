@@ -22,11 +22,15 @@ namespace FaceAddon
             if (faceprops != null)
             {
                 Pawn pawn = __instance.pawn;
-                var racomp = pawn.GetComp<FaceAddonComp>();
-                if (racomp.raceAddonGraphicSet == null)
+                if (pawn.story != null && pawn.story.headType != null)
                 {
-                    racomp.raceAddonGraphicSet = new RaceAddonGraphicSet(pawn, faceprops, racomp); 
+                    var racomp = pawn.GetComp<FaceAddonComp>();
+                    if (racomp.raceAddonGraphicSet == null)
+                    {
+                        racomp.raceAddonGraphicSet = new RaceAddonGraphicSet(pawn, faceprops, racomp);
+                    }
                 }
+
             }
         }
     }
@@ -40,7 +44,7 @@ namespace FaceAddon
         [HarmonyPostfix]
         public static void Postfix(Pawn ___pawn, Hediff hediff)
         {
-            if (___pawn.def.IsFaceAddonRaceDef() && ___pawn.GetComp<FaceAddonComp>() is var racomp && racomp.raceAddonGraphicSet != null)
+            if (___pawn.def.IsFaceAddonRaceDef() && ___pawn.GetComp<FaceAddonComp>() is var racomp && racomp.raceAddonGraphicSet != null && ___pawn.health != null && ___pawn.health.hediffSet != null)
             {
                 foreach (var fgs in racomp.raceAddonGraphicSet.faceGraphics)
                 {

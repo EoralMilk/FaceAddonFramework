@@ -41,6 +41,7 @@ Adding face addon which can make facial expression to any creatures. It also can
 ```
 
 - The face type def can be looks like this
+- If you not set 'requireHeadTypes'. this FaceTypeDef can be apply to any headtypes.
 ```xml
 	<FaceAddon.FaceTypeDef>
 		<defName>Kurin_FaceType1</defName>
@@ -55,6 +56,10 @@ Adding face addon which can make facial expression to any creatures. It also can
 		<blinkDurationMin>120</blinkDurationMin>
 		<blinkDurationMin>120</blinkDurationMin>
 		<winkChance>0.3</winkChance>
+
+		<requireHeadTypes>
+			<li>...</li>
+		</requireHeadTypes>
 	</FaceAddon.FaceTypeDef>
 ```
 
@@ -64,6 +69,7 @@ Adding face addon which can make facial expression to any creatures. It also can
 		<defName>Kurin_FoxEarL</defName>
 		<shaderType>CutoutComplex</shaderType>
 		<layerOffset>20</layerOffset>
+		<layerOffsetAlwaysPositive>true</layerOffsetAlwaysPositive>
 		<colorBase>Hair</colorBase>
 		<colorSub>Skin</colorSub>
 		<fixedPath>KurinMeowEdition/Ear/Left/FoxEarLA</fixedPath>

@@ -71,7 +71,7 @@ namespace FaceAddon
         public float winkChance = 0.3f;
 
         public int randomWeight = 1;
-
+        public List<HeadTypeDef> requireHeadTypes;
     }
 
     public class CustomPath
@@ -95,6 +95,7 @@ namespace FaceAddon
         public bool displayOnRot = true;
         public bool displayOnDessicated = false;
         public int layerOffset = 0;
+        public bool layerOffsetAlwaysPositive = false;
 
         public bool fixedOnBlink = false;
         public ColorType colorBase = ColorType.White;

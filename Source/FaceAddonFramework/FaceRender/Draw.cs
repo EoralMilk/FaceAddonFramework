@@ -54,7 +54,7 @@ namespace FaceAddon
                 if ((bodyDrawType == RotDrawMode.Rotting && !fgs.faceDef.displayOnRot) || (bodyDrawType == RotDrawMode.Dessicated && !fgs.faceDef.displayOnDessicated))
                     continue;
                 Material faceMat = OverrideMaterialIfNeeded_NewTemp(__instance.graphics, fgs.MatAt(headFacing, racomp.raceAddonGraphicSet.WInkAndBlink.BlinkNow, racomp.raceAddonGraphicSet.WInkAndBlink.WinkNow, false), pawn);
-                GenDraw.DrawMeshNowOrLater(headMesh, vector + loc.SetLayer((fgs.faceDef.layerOffset) * negOffset), quaternion, faceMat, flags.FlagSet(PawnRenderFlags.DrawNow));
+                GenDraw.DrawMeshNowOrLater(headMesh, vector + loc.SetLayer((fgs.faceDef.layerOffset) * (fgs.faceDef.layerOffsetAlwaysPositive ? 1 : negOffset)), quaternion, faceMat, flags.FlagSet(PawnRenderFlags.DrawNow));
             }
 
 
