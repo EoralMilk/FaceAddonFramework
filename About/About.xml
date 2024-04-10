@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Face Addon Framework</name>
+  <author>EoralMilk</author>
+  <packageId>EoralMilk.FaceAddonFramework</packageId>
+  <supportedVersions>
+    <li>1.4</li>
+  </supportedVersions>
+  <description>Adding facial expression state rendering to creatures can be used as a lightweight
+    version of the facial expression framework, inspired by Garam.
+    
+    为生物添加面部表情状态渲染，可以作为一个轻量版本的面部表情框架，启发自Garam。</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>https://github.com/pardeike/HarmonyRimWorld</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+  </loadAfter>
+</ModMetaData>
