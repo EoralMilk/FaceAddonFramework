@@ -2,15 +2,6 @@
 Face Addon Framework —— Add any FaceAddon you want for any pawn who has a head!
 Adding face addon which can make facial expression to any creatures. It also can be used as a lightweight version of the facial expression framework, inspired by Garam.
 
-## 1.4 support
-	If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4.md)
-
-## Example Project
-- Kurin Meow Edition (WIP)
-![Face expression and FaceAddon fox ears](./About/kurinFaceAddon.png "Face expression and FaceAddon fox ears")
-
-![Face animation](./About/face_animation.gif "Face animation")
-
 ## HowToUse
 - Add a comp `FaceAddon.CompProperties_FaceAddonComps` to your Pawn's ThingDef
 - You can also use `FaceAddon.CompProperties_DrawRootOffset` comp to change the render offset of the pawn's rootloc
@@ -49,14 +40,17 @@ Adding face addon which can make facial expression to any creatures. It also can
 	<FaceAddon.FaceTypeDef>
 		<defName>Kurin_FaceType1</defName>
 		<randomWeight>1</randomWeight>
+
 		<Upper>Kurin_Face_Upper_Public</Upper>
 		<Lower>Kurin_Face_Lower_A</Lower>
 		<Attach>your_attach_FaceAddonDef</Attach>
+
 		<tickBlinkMin>120</tickBlinkMin>
 		<tickBlinkMax>120</tickBlinkMax>
 		<blinkDurationMin>120</blinkDurationMin>
 		<blinkDurationMin>120</blinkDurationMin>
 		<winkChance>0.3</winkChance>
+
 		<requireHeadTypes>
 			<li>...</li>
 		</requireHeadTypes>
@@ -68,35 +62,27 @@ Adding face addon which can make facial expression to any creatures. It also can
 	<FaceAddon.FaceAddonDef Name="KurinEar">
 		<defName>Kurin_FoxEarL</defName>
 		<shaderType>CutoutComplex</shaderType>
-		<useSkipFlags>
-			<li>Head</li>
-			<li>...</li> //you can use RenderSkipFlagDef here
-		</useSkipFlags>
-		<visibleFacing>
-			<li>East</li>
-			<li>South</li>
-			<li>West</li>
-			<li>...</li> //you can use Rot4 here
-		</visibleFacing>
-
-		<displayOnRot>true</displayOnRot>
-		<useRottenColor>true</useRottenColor>
-		<displayOnDessicated>true</displayOnDessicated>
-
-		<layerOffset>22.5</layerOffset>
-		<fixedOnBlink>true</fixedOnBlink>
-
+		<layerOffset>20</layerOffset>
+		<layerOffsetAlwaysPositive>true</layerOffsetAlwaysPositive>
 		<colorBase>Hair</colorBase>
 		<colorSub>Skin</colorSub>
-		<damageAnimDuration>30</damageAnimDuration>
 		<fixedPath>KurinMeowEdition/Ear/Left/FoxEarLA</fixedPath>
 	</FaceAddon.FaceAddonDef>
 
-	<FaceAddon.FaceAddonDef>
-		<defName>Kurin_Face_Lower_A</defName>
+	<FaceAddon.FaceAddonDef ParentName="KurinEar">
+		<defName>Kurin_FoxEarR</defName>
+		<fixedPath>KurinMeowEdition/Ear/Right/FoxEarRA</fixedPath>
+	</FaceAddon.FaceAddonDef>
+
+	<FaceAddon.FaceAddonDef Name="KurinFaceDefbase" Abstract="True">
 		<shaderType>Transparent</shaderType>
 		<colorBase>White</colorBase>
 		<colorSub>Skin</colorSub>
+	</FaceAddon.FaceAddonDef>
+
+	<FaceAddon.FaceAddonDef Name="Kurin_Face_Lower_A" ParentName="KurinFaceDefbase">
+		<defName>Kurin_Face_Lower_A</defName>
+		<!--Normally Path By Mood-->
 		<mentalBreakPath>KurinMeowEdition/Face_New/LowerA/MentalBreak</mentalBreakPath>
 		<aboutToBreakPath>KurinMeowEdition/Face_New/LowerA/AboutToBreak</aboutToBreakPath>
 		<onEdgePath>KurinMeowEdition/Face_New/LowerA/OnEdge</onEdgePath>
@@ -104,8 +90,11 @@ Adding face addon which can make facial expression to any creatures. It also can
 		<neutralPath>KurinMeowEdition/Face_New/LowerA/Neutral</neutralPath>
 		<contentPath>KurinMeowEdition/Face_New/LowerA/Content</contentPath>
 		<happyPath>KurinMeowEdition/Face_New/LowerA/Happy</happyPath>
+		<!--Special Path-->
 		<attackingPath>KurinMeowEdition/Face_New/LowerA/shout</attackingPath>
 		<damagedPath>KurinMeowEdition/Face_New/LowerA/AboutToBreak</damagedPath>
+
+		<!-- <draftedPath>KurinMeowEdition/Face_New/LowerA/Neutral</draftedPath> -->
 		<sleepingPath>KurinMeowEdition/Face_New/LowerA/Sleeping1</sleepingPath>
 		<painShockPath>KurinMeowEdition/Face_New/LowerA/PainShock</painShockPath>
 		<deadPath>KurinMeowEdition/Face_New/LowerA/Dead1</deadPath>
@@ -113,9 +102,26 @@ Adding face addon which can make facial expression to any creatures. It also can
 		<winkPath>KurinMeowEdition/Face_New/LowerA/wink_close</winkPath>
 	</FaceAddon.FaceAddonDef>
 
-	<FaceAddon.FaceAddonDef>
+	<FaceAddon.FaceAddonDef ParentName="Kurin_Face_Lower_A">
+		<defName>Kurin_Face_Lower_B</defName>
+		<sleepingPath>KurinMeowEdition/Face_New/LowerA/Sleeping2</sleepingPath>
+		<deadPath>KurinMeowEdition/Face_New/LowerA/Dead2</deadPath>
+		<blinkPath>KurinMeowEdition/Face_New/LowerA/wink_close2</blinkPath>
+		<winkPath>KurinMeowEdition/Face_New/LowerA/wink_close2</winkPath>
+	</FaceAddon.FaceAddonDef>
+
+	<FaceAddon.FaceAddonDef ParentName="Kurin_Face_Lower_A">
+		<defName>Kurin_Face_Lower_C</defName>
+		<deadPath>KurinMeowEdition/Face_New/LowerA/Dead2</deadPath>
+		<blinkPath>KurinMeowEdition/Face_New/LowerA/wink_close2</blinkPath>
+		<sleepingPath>KurinMeowEdition/Face_New/LowerA/wink_close2</sleepingPath>
+		<winkPath>KurinMeowEdition/Face_New/LowerA/wink_close</winkPath>
+	</FaceAddon.FaceAddonDef>
+
+	<FaceAddon.FaceAddonDef ParentName="KurinFaceDefbase">
 		<defName>Kurin_Face_Upper_Public</defName>
 		<layerOffset>12</layerOffset>
+		<!--Normally Path By Mood-->
 		<mentalBreakPath>KurinMeowEdition/Face_New/UpperA/Angry</mentalBreakPath>
 		<aboutToBreakPath>KurinMeowEdition/Face_New/UpperA/Worried</aboutToBreakPath>
 		<onEdgePath>KurinMeowEdition/Face_New/UpperA/Worried</onEdgePath>
@@ -123,38 +129,17 @@ Adding face addon which can make facial expression to any creatures. It also can
 		<neutralPath>KurinMeowEdition/Face_New/UpperA/Normal</neutralPath>
 		<contentPath>KurinMeowEdition/Face_New/UpperA/Happy</contentPath>
 		<happyPath>KurinMeowEdition/Face_New/UpperA/Happy</happyPath>
+		<!--Special Path-->
 		<attackingPath>KurinMeowEdition/Face_New/UpperA/OnArm</attackingPath>
 		<draftedPath>KurinMeowEdition/Face_New/UpperA/OnArm</draftedPath>
+
 		<sleepingPath>KurinMeowEdition/Face_New/UpperA/Normal</sleepingPath>
 		<painShockPath>KurinMeowEdition/Face_New/UpperA/Worried</painShockPath>
 		<deadPath>KurinMeowEdition/Face_New/UpperA/Worried</deadPath>
 		<blinkPath>KurinMeowEdition/Face_New/UpperA/Normal</blinkPath>
 		<winkPath>KurinMeowEdition/Face_New/UpperA/Happy</winkPath>
 		<damagedPath>KurinMeowEdition/Face_New/UpperA/Angry</damagedPath>
+
 	</FaceAddon.FaceAddonDef>
 	
-```
-
-- Here is the rendering order, 
-
-```markdown
-- FaceStateType.None // FixedPath texture
-- FaceStateType.Dead
-- FaceStateType.PainShocked
-- FaceStateType.Sleeping
-- FaceStateType.Damaged
-- FaceStateType.Attacking
-
-- BlinkStateType.Blink
-- BlinkStateType.Wink
-
-- FaceStateType.Drafted
-- FaceStateType.MentalBreak
-- FaceStateType.Custom
-- FaceStateType.AboutToBreak
-- FaceStateType.OnEdge
-- FaceStateType.Stressed
-- FaceStateType.Neutral
-- FaceStateType.Content
-- FaceStateType.Happy
 ```

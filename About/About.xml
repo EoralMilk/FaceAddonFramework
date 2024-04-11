@@ -5,6 +5,7 @@
   <packageId>EoralMilk.FaceAddonFramework</packageId>
   <supportedVersions>
     <li>1.4</li>
+    <li>1.5</li>
   </supportedVersions>
   <description>Face Addon Framework —— Add any FaceAddon you want for any pawn who has a head!
 Adding face addon which can make facial expression to any creatures. It also can be used as a
