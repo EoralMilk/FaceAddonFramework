@@ -89,7 +89,7 @@ namespace FaceAddon
             base.PostExposeData();
             Scribe_Defs.Look(ref facetype, "facetype");
             Scribe_Defs.Look(ref additionalfacetype, "additionalfacetype");
-            CreateOrUpdateGraphicSet();
+            //CreateOrUpdateGraphicSet();
         }
     }
 
@@ -104,6 +104,7 @@ namespace FaceAddon
         public PawnRenderNode_FaceAddon(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree)
             : base(pawn, props, tree)
         {
+            CurState = FaceStateType.Neutral;
         }
 
         protected override void EnsureMaterialsInitialized()
