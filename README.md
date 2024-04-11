@@ -3,7 +3,7 @@ Face Addon Framework —— Add any FaceAddon you want for any pawn who has a he
 Adding face addon which can make facial expression to any creatures. It also can be used as a lightweight version of the facial expression framework, inspired by Garam.
 
 ## 1.4 support
-	If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4.md)
+If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4.md)
 
 ## Example Project
 - Kurin Meow Edition (WIP)
