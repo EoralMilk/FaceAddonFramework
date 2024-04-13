@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using Verse;
 using static Verse.PawnRenderNodeProperties;
@@ -35,6 +36,23 @@ namespace FaceAddon
         public int priority = 0;
     }
 
+    public class MentalStatePath
+    {
+        public MentalStateDef state;
+
+        [NoTranslate]
+        public string path;
+
+        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+        {
+            DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "state", xmlRoot.Name);
+            if (xmlRoot.HasChildNodes)
+            {
+                path = ParseHelper.FromString<string>(xmlRoot.FirstChild.Value);
+            }
+        }
+    }
+
     public class FaceAddonDef : Def
     {
         public ShaderTypeDef shaderType;
@@ -50,21 +68,12 @@ namespace FaceAddon
         public AttachmentColorType colorBase = AttachmentColorType.Custom;
         public AttachmentColorType colorSub = AttachmentColorType.Custom;
         public int damageAnimDuration = 30;
-        public List<MentalStateDef> handleMentalBreakState = new List<MentalStateDef>()
-        {
-            MentalStateDefOf.Berserk,
-            MentalStateDefOf.Manhunter,
-            MentalStateDefOf.ManhunterPermanent,
-        };
-
-        HashSet<MentalStateDef> handleMentalBreak;
-        public HashSet<MentalStateDef> HandleMentalBreak => handleMentalBreak;
 
         [NoTranslate]
         public string fixedPath; // if you use this path, the face addon will only draw fixed path texture and won't use other texture
 
-        [NoTranslate]
-        public string mentalBreakPath;
+        public List<MentalStatePath> mentalStatePaths;
+
         [NoTranslate]
         public string aboutToBreakPath;
         [NoTranslate]
@@ -95,6 +104,8 @@ namespace FaceAddon
         public string attackingPath;
 
         public List<CustomPath> customs = new List<CustomPath>();
+        Dictionary<MentalStateDef, string> mentalstats = new Dictionary<MentalStateDef, string>();
+        public Dictionary<MentalStateDef, string> MentalStats => mentalstats;
 
         public override void ResolveReferences()
         {
@@ -103,7 +114,18 @@ namespace FaceAddon
             {
                 shaderType = ShaderTypeDefOf.Cutout;
             }
-            handleMentalBreak = handleMentalBreakState.ToHashSet();
+            if (mentalStatePaths != null)
+            {
+                foreach (var ms in mentalStatePaths)
+                {
+                    if (ms.path.NullOrEmpty())
+                    {
+                        Log.Error("FaceAddon: the mentalStatePaths doesn't allow Null or Empty path at mental state: " + ms.state);
+                        continue;
+                    }
+                    mentalstats.Add(ms.state, ms.path);
+                }
+            }
         }
 
         public bool CanDrawAddon(PawnDrawParms parms)

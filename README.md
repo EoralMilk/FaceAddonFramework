@@ -123,7 +123,11 @@ If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4
 	<FaceAddon.FaceAddonDef>
 		<defName>Kurin_Face_Upper_Public</defName>
 		<layerOffset>12</layerOffset>
-		<mentalBreakPath>KurinMeowEdition/Face_New/UpperA/Angry</mentalBreakPath>
+		//mentalBreakPath has been removed
+		<mentalStatePaths> //use this to specific define every mental state texture path
+			<Berserk>KurinMeowEdition/Face_New/UpperA/Angry</Berserk>
+			<Binging_DrugExtreme>KurinMeowEdition/Face_New/UpperA/Worried</Binging_DrugExtreme>
+		</mentalStatePaths>
 		<aboutToBreakPath>KurinMeowEdition/Face_New/UpperA/Worried</aboutToBreakPath>
 		<onEdgePath>KurinMeowEdition/Face_New/UpperA/Worried</onEdgePath>
 		<stressedPath>KurinMeowEdition/Face_New/UpperA/Worried</stressedPath>

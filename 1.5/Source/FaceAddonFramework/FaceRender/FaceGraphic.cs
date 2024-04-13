@@ -179,7 +179,7 @@ namespace FaceAddon
         Stressed,
         OnEdge,
         AboutToBreak,
-        MentalBreak,
+        MentalState,
         Drafted,
         Attacking,
 
@@ -203,7 +203,7 @@ namespace FaceAddon
         Shader shader => faceDef.shaderType.Shader;
         public Graphic fixedGraphic => faceDef.fixedPath.GetGraphic(shader, main, sub, Vector2.one);
 
-        public Graphic mentalBreak => faceDef.mentalBreakPath.GetGraphic(shader, main, sub, Vector2.one);
+        //public Graphic mentalBreak => faceDef.mentalBreakPath.GetGraphic(shader, main, sub, Vector2.one);
         public Graphic aboutToBreak => faceDef.aboutToBreakPath.GetGraphic(shader, main, sub, Vector2.one);
         public Graphic onEdge => faceDef.onEdgePath.GetGraphic(shader, main, sub, Vector2.one);
         public Graphic stressed => faceDef.stressedPath.GetGraphic(shader, main, sub, Vector2.one);
@@ -296,9 +296,9 @@ namespace FaceAddon
             {
                 return FaceStateType.Drafted;
             }
-            if (pawn.MentalStateDef != null && faceDef.HandleMentalBreak != null && faceDef.HandleMentalBreak.Contains(pawn.MentalStateDef))
+            if (pawn.MentalStateDef != null  && faceDef.MentalStats.ContainsKey(pawn.MentalStateDef))
             {
-                return FaceStateType.MentalBreak;
+                return FaceStateType.MentalState;
             }
             if (custom.Second != null)
             {
@@ -328,7 +328,7 @@ namespace FaceAddon
                 }
                 return FaceStateType.Happy;
             }
-            return FaceStateType.None;
+            return FaceStateType.Neutral;
         }
 
         public Graphic GraphicAt(Pawn pawn, FaceStateType faceStateType, BlinkStateType blinkStateType, Color c1, Color c2)
@@ -355,7 +355,11 @@ namespace FaceAddon
             switch (faceStateType)
             {
                 case FaceStateType.Drafted: return drafted;
-                case FaceStateType.MentalBreak: return mentalBreak;
+                case FaceStateType.MentalState:
+                    faceDef.MentalStats.TryGetValue(pawn.MentalStateDef, out string path);
+                    if (path.NullOrEmpty())
+                        return null;
+                    return path.GetGraphic(shader, main, sub, Vector2.one);
                 case FaceStateType.Custom: return custom.Second;
                 case FaceStateType.AboutToBreak: return aboutToBreak;
                 case FaceStateType.OnEdge: return onEdge;
