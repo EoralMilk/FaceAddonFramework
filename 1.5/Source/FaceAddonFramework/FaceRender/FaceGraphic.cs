@@ -47,19 +47,22 @@ namespace FaceAddon
             }
             if (comp.facetype != null)
             {
+                comp.customColorBaseA = comp.customColorBaseA == Color.white ? (comp.facetype?.customColorsBase?.RandomColorInList() ?? Color.white) : comp.customColorBaseA;
+                comp.customColorSubA = comp.customColorSubA == Color.white ? (comp.facetype?.customColorsSub?.RandomColorInList() ?? Color.white) : comp.customColorSubA;
+
                 if (comp.facetype.Lower != null)
                 {
-                    var ftA = new FaceGraphicRecord(comp.facetype.Lower, comp.facetype.Lower.fixedOnBlink);
+                    var ftA = new FaceGraphicRecord(comp.facetype.Lower, comp.customColorBaseA, comp.customColorSubA);
                     faceGraphics.Add(ftA);
                 }
                 if (comp.facetype.Upper != null)
                 {
-                    var ftB = new FaceGraphicRecord(comp.facetype.Upper, comp.facetype.Upper.fixedOnBlink);
+                    var ftB = new FaceGraphicRecord(comp.facetype.Upper, comp.customColorBaseA, comp.customColorSubA);
                     faceGraphics.Add(ftB);
                 }
                 if (comp.facetype.Attach != null)
                 {
-                    var ftC = new FaceGraphicRecord(comp.facetype.Attach, comp.facetype.Attach.fixedOnBlink);
+                    var ftC = new FaceGraphicRecord(comp.facetype.Attach, comp.customColorBaseA, comp.customColorSubA);
                     faceGraphics.Add(ftC);
                 }
             }
@@ -91,19 +94,21 @@ namespace FaceAddon
             }
             if (comp.additionalfacetype != null)
             {
+                comp.customColorBaseB = comp.customColorBaseB == Color.white ? (comp.additionalfacetype?.customColorsBase?.RandomColorInList() ?? Color.white) : comp.customColorBaseB;
+                comp.customColorSubB = comp.customColorSubB == Color.white ? (comp.additionalfacetype?.customColorsSub?.RandomColorInList() ?? Color.white) : comp.customColorSubB;
                 if (comp.additionalfacetype.Lower != null)
                 {
-                    var ftA = new FaceGraphicRecord(comp.additionalfacetype.Lower, comp.additionalfacetype.Lower.fixedOnBlink);
+                    var ftA = new FaceGraphicRecord(comp.additionalfacetype.Lower, comp.customColorBaseB, comp.customColorSubB);
                     faceGraphics.Add(ftA);
                 }
                 if (comp.additionalfacetype.Upper != null)
                 {
-                    var ftB = new FaceGraphicRecord(comp.additionalfacetype.Upper, comp.additionalfacetype.Upper.fixedOnBlink);
+                    var ftB = new FaceGraphicRecord(comp.additionalfacetype.Upper, comp.customColorBaseB, comp.customColorSubB);
                     faceGraphics.Add(ftB);
                 }
                 if (comp.additionalfacetype.Attach != null)
                 {
-                    var ftC = new FaceGraphicRecord(comp.additionalfacetype.Attach, comp.additionalfacetype.Attach.fixedOnBlink);
+                    var ftC = new FaceGraphicRecord(comp.additionalfacetype.Attach, comp.customColorBaseB, comp.customColorSubB);
                     faceGraphics.Add(ftC);
                 }
             }
@@ -114,7 +119,7 @@ namespace FaceAddon
                 {
                     if (fdef != null)
                     {
-                        var frecord = new FaceGraphicRecord(fdef, fdef.fixedOnBlink);
+                        var frecord = new FaceGraphicRecord(fdef, comp.customColorBaseA, comp.customColorSubA);
                         faceGraphics.Add(frecord);
                     }
                 }
@@ -134,6 +139,9 @@ namespace FaceAddon
                     addonRecord = fg,
                     colorType = fg.faceDef.colorBase,
                     colorTypeB = fg.faceDef.colorSub,
+                    colorCustomBase = fg.main,
+                    colorCustomSub = fg.sub,
+
                     useRottenColor = fg.faceDef.useRottenColor,
                     shaderTypeDef = fg.faceDef.shaderType,
                     parentTagDef = PawnRenderNodeTagDefOf.Head,
@@ -187,12 +195,11 @@ namespace FaceAddon
 
     public class FaceGraphicRecord
     {
-        private readonly bool fixedBlinkWinkFace;
         public readonly FaceAddonDef faceDef;
         public int curState = 0;
 
-        Color main;
-        Color sub;
+        public Color main;
+        public Color sub;
         Shader shader => faceDef.shaderType.Shader;
         public Graphic fixedGraphic => faceDef.fixedPath.GetGraphic(shader, main, sub, Vector2.one);
 
@@ -213,10 +220,18 @@ namespace FaceAddon
         public Graphic attacking => faceDef.attackingPath.GetGraphic(shader, main, sub, Vector2.one);
         public Pair<CustomPath, Graphic> custom;
 
-        public FaceGraphicRecord(FaceAddonDef faceDef, bool fixedBlinkWinkFace)
+        public bool HasAttacking => !faceDef.attackingPath.NullOrEmpty();
+        public bool HasDrafted => !faceDef.draftedPath.NullOrEmpty();
+        public bool HasDamaged => !faceDef.damagedPath.NullOrEmpty();
+
+        public bool HasBlink => !faceDef.blinkPath.NullOrEmpty();
+        public bool HasWink => !faceDef.winkPath.NullOrEmpty();
+
+        public FaceGraphicRecord(FaceAddonDef faceDef, Color c1, Color c2)
         {
-            this.fixedBlinkWinkFace = fixedBlinkWinkFace;
             this.faceDef = faceDef;
+            main = c1;
+            sub = c2;
         }
         public void Update(HediffSet hediffSet)
         {
@@ -240,17 +255,11 @@ namespace FaceAddon
 
         public BlinkStateType CheckBlink(Pawn pawn, RaceAddonGraphicSet raceAddonGraphicSet)
         {
-            if (fixedGraphic != null || pawn.Dead || pawn.health.InPainShock || !pawn.Awake() ||
-                (attacking != null && pawn.CurJobDef != JobDefOf.Wait_Combat && pawn.IsFighting()) ||
-                (damaged != null && faceDef.damageAnimDuration > raceAddonGraphicSet.LastDamageElapse)
-                )
-                return BlinkStateType.None;
-
-            if (raceAddonGraphicSet.WInkAndBlink.BlinkNow && !fixedBlinkWinkFace)
+            if (raceAddonGraphicSet.WInkAndBlink.BlinkNow && HasBlink)
             {
                 return BlinkStateType.Blink;
             }
-            if (raceAddonGraphicSet.WInkAndBlink.WinkNow && !fixedBlinkWinkFace)
+            if (raceAddonGraphicSet.WInkAndBlink.WinkNow && HasWink)
             {
                 return BlinkStateType.Wink;
             }
@@ -263,11 +272,11 @@ namespace FaceAddon
             if (fixedGraphic != null)
                 return FaceStateType.None;
 
-            if (pawn.Dead)
+            if (pawn.health?.Dead ?? false)
             {
                 return FaceStateType.Dead;
             }
-            if (pawn.health.InPainShock)
+            if (pawn.health?.InPainShock ?? false)
             {
                 return FaceStateType.PainShocked;
             }
@@ -275,15 +284,15 @@ namespace FaceAddon
             {
                 return FaceStateType.Sleeping;
             }
-            if (attacking != null && pawn.CurJobDef != JobDefOf.Wait_Combat && pawn.IsFighting())
+            if (HasAttacking && pawn.CurJobDef != JobDefOf.Wait_Combat && pawn.IsFighting())
             {
                 return FaceStateType.Attacking;
             }
-            if (damaged != null && faceDef.damageAnimDuration > raceAddonGraphicSet.LastDamageElapse)
+            if (HasDamaged && faceDef.damageAnimDuration > raceAddonGraphicSet.LastDamageElapse)
             {
                 return FaceStateType.Damaged;
             }
-            if (drafted != null && pawn.Drafted)
+            if (HasDrafted && pawn.Drafted)
             {
                 return FaceStateType.Drafted;
             }

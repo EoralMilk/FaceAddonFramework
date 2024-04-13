@@ -40,5 +40,14 @@ namespace FaceAddon
             loc.y += 0.003f * (priority / 10f);
             return loc;
         }
+        public static Color RandomColorInList(this List<Color> colors)
+        {
+            if (colors == null || colors.Count == 0)
+            {
+                return Color.white;
+            }
+
+            return colors[Verse.Rand.Range(0, colors.Count)];
+        }
     }
 }

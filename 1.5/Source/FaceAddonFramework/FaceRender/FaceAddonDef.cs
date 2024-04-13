@@ -20,6 +20,9 @@ namespace FaceAddon
         public int blinkDurationMax = 35;
         public float winkChance = 0.3f;
 
+        public List<Color> customColorsBase;
+        public List<Color> customColorsSub;
+
         public int randomWeight = 1;
         public List<HeadTypeDef> requireHeadTypes;
     }
@@ -44,7 +47,6 @@ namespace FaceAddon
 
         public float layerOffset = 0;
 
-        public bool fixedOnBlink = false;
         public AttachmentColorType colorBase = AttachmentColorType.Custom;
         public AttachmentColorType colorSub = AttachmentColorType.Custom;
         public int damageAnimDuration = 30;

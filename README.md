@@ -45,6 +45,7 @@ If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4
 
 - The face type def can be looks like this
 - If you not set 'requireHeadTypes'. this FaceTypeDef can be apply to any headtypes.
+- The 'requireHeadTypes' here is used to restrict Comps from deciding if a FaceTypeDef can be selected at random (the current Pawn will use a HeadTypeDef, If a FaceTypeDef has content in requireFaceType and not contains the HeadTypeDef that pawn is using, then it will not be randomly selected.)
 ```xml
 	<FaceAddon.FaceTypeDef>
 		<defName>Kurin_FaceType1</defName>
@@ -60,6 +61,12 @@ If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4
 		<requireHeadTypes>
 			<li>...</li>
 		</requireHeadTypes>
+		<customColorsBase> // for faceaddon's colorbase when that is Custom
+			<li>...</li>
+		</customColorsBase>
+		<customColorsSub>// for faceaddon's colorsub when that is Custom
+			<li>...</li>
+		</customColorsSub>
 	</FaceAddon.FaceTypeDef>
 ```
 
@@ -84,7 +91,7 @@ If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4
 		<displayOnDessicated>true</displayOnDessicated>
 
 		<layerOffset>22.5</layerOffset>
-		<fixedOnBlink>true</fixedOnBlink>
+		//fixedOnBlink has been removed, if there is not blink texture, it won't blink.
 
 		<colorBase>Hair</colorBase>
 		<colorSub>Skin</colorSub>

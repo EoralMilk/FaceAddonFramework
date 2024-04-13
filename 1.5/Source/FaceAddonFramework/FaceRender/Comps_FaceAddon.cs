@@ -34,6 +34,10 @@ namespace FaceAddon
 
         public FaceTypeDef facetype;
         public FaceTypeDef additionalfacetype;
+        public Color customColorBaseA = Color.white;
+        public Color customColorSubA = Color.white;
+        public Color customColorBaseB = Color.white;
+        public Color customColorSubB = Color.white;
 
         public RaceAddonGraphicSet raceAddonGraphicSet;
 
@@ -48,6 +52,7 @@ namespace FaceAddon
                     {
                         PawnRenderNode_FaceAddon renderNode = (PawnRenderNode_FaceAddon)Activator.CreateInstance(typeof(PawnRenderNode_FaceAddon), Pawn, props, Pawn.Drawer.renderer.renderTree);
                         renderNode.Comp = this;
+                        renderNode.CheckState(Pawn);
                         list.Add(renderNode);
                     }
                     return list;
@@ -69,7 +74,7 @@ namespace FaceAddon
             raceAddonGraphicSet?.UpadteTickRare();
         }
 
-        public void CreateOrUpdateGraphicSet()
+        public void CreateOrUpdateGraphicSet() 
         {
             if (raceAddonGraphicSet == null)
             {
@@ -89,6 +94,11 @@ namespace FaceAddon
             base.PostExposeData();
             Scribe_Defs.Look(ref facetype, "facetype");
             Scribe_Defs.Look(ref additionalfacetype, "additionalfacetype");
+            Scribe_Values.Look(ref customColorBaseA, "customColorBaseA");
+            Scribe_Values.Look(ref customColorSubA, "customColorSubA");
+            Scribe_Values.Look(ref customColorBaseB, "customColorBaseB");
+            Scribe_Values.Look(ref customColorSubB, "customColorSubB");
+
             //CreateOrUpdateGraphicSet();
         }
     }
@@ -105,6 +115,8 @@ namespace FaceAddon
             : base(pawn, props, tree)
         {
             CurState = FaceStateType.Neutral;
+            CurBlinkState = BlinkStateType.None;
+            graphic = GraphicFor(pawn);
         }
 
         protected override void EnsureMaterialsInitialized()
@@ -132,6 +144,50 @@ namespace FaceAddon
             }
             return requestRecache;
         }
+
+        public override Color ColorFor(Pawn pawn)
+        {
+            Color color;
+            switch (Props.colorType)
+            {
+                case PawnRenderNodeProperties.AttachmentColorType.Hair:
+                    if (pawn.story == null)
+                    {
+                        Log.ErrorOnce("Trying to set render node color to hair for " + pawn.LabelShort + " without pawn story. Defaulting to white.", Gen.HashCombine(pawn.thingIDNumber, 828310001));
+                        color = Color.white;
+                    }
+                    else
+                    {
+                        color = pawn.story.HairColor;
+                    }
+
+                    break;
+                case PawnRenderNodeProperties.AttachmentColorType.Skin:
+                    if (pawn.story == null)
+                    {
+                        Log.ErrorOnce("Trying to set render node color to skin for " + pawn.LabelShort + " without pawn story. Defaulting to white.", Gen.HashCombine(pawn.thingIDNumber, 228340903));
+                        color = Color.white;
+                    }
+                    else
+                    {
+                        color = pawn.story.SkinColor;
+                    }
+
+                    break;
+                default:
+                    color = Props.colorCustomBase;
+                    break;
+            }
+
+            color *= props.colorRGBPostFactor;
+            if (props.useRottenColor && pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting)
+            {
+                color = PawnRenderUtility.GetRottenColor(color);
+            }
+
+            return color;
+        }
+
 
         public virtual Color ColorForB(Pawn pawn)
         {
@@ -163,7 +219,7 @@ namespace FaceAddon
 
                     break;
                 default:
-                    color = props.color ?? Color.white;
+                    color = Props.colorCustomSub;
                     break;
             }
 
@@ -210,6 +266,9 @@ namespace FaceAddon
     {
         public FaceGraphicRecord addonRecord;
         public AttachmentColorType colorTypeB;
+        public Color colorCustomBase;
+        public Color colorCustomSub;
+
         public PawnRenderNodeProperties_FaceAddon()
         {
             workerClass = typeof(PawnRenderNodeWorker_FaceAddon);

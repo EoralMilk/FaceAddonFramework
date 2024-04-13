@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="FaceRender\Comps_FaceAddon.cs" />
     <Compile Include="FaceRender\Draw.cs" />
-    <Compile Include="FaceRender\Exts.cs" />
+    <Compile Include="Exts.cs" />
     <Compile Include="FaceRender\FaceAddonDef.cs" />
     <Compile Include="FaceRender\FaceGraphic.cs" />
     <Compile Include="FaceRender\Patchs.cs" />
