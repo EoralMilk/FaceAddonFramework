@@ -102,7 +102,7 @@ If you want to use this in 1.4, please read the [READMEv1-4.md](./1.4/READMEv1-4
 	<FaceAddon.FaceAddonDef>
 		<defName>Kurin_Face_Lower_A</defName>
 		<shaderType>Transparent</shaderType>
-		<colorBase>White</colorBase>
+		<colorBase>Custom</colorBase>
 		<colorSub>Skin</colorSub>
 		<mentalBreakPath>KurinMeowEdition/Face_New/LowerA/MentalBreak</mentalBreakPath>
 		<aboutToBreakPath>KurinMeowEdition/Face_New/LowerA/AboutToBreak</aboutToBreakPath>
