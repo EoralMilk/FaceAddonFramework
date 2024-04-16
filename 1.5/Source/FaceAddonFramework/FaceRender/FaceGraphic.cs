@@ -16,6 +16,7 @@ namespace FaceAddon
         public readonly WinkAndBlinkHandler WInkAndBlink;
         public int LastDamageElapse;
         public readonly Pawn Pawn;
+
         public RaceAddonGraphicSet(Pawn pawn, CompProperties_FaceAddonComps faceprops, FaceAddonComp comp)
         {
             Pawn = pawn;
@@ -331,10 +332,14 @@ namespace FaceAddon
             return FaceStateType.Neutral;
         }
 
-        public Graphic GraphicAt(Pawn pawn, FaceStateType faceStateType, BlinkStateType blinkStateType, Color c1, Color c2)
+        public Graphic GraphicAt(Pawn pawn, FaceStateType faceStateType, BlinkStateType blinkStateType, Color c1, Color c2, bool forceneutral = false)
         {
             this.main = c1;
             this.sub = c2;
+            if (forceneutral && faceStateType != FaceStateType.None)
+            {
+                return neutral;
+            }
 
             switch (faceStateType)
             {

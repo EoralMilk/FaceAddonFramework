@@ -41,22 +41,32 @@ namespace FaceAddon
 
         public RaceAddonGraphicSet raceAddonGraphicSet;
 
-        
+        public int initTickCount = 15; // There is a strange phenomenon in 1.5 that causes characters to have mentalstate images when they are just init, use this to stop it!
+
         public override List<PawnRenderNode> CompRenderNodes()
         {
+            if (raceAddonGraphicSet == null && parent != null && (parent as Pawn is var pawn))
+            {
+                Pawn = parent as Pawn;
+                CreateOrUpdateGraphicSet();
+            }
+
             if (raceAddonGraphicSet != null)
             {
                 List<PawnRenderNode> list = new List<PawnRenderNode>();
                 {
                     foreach (var props in raceAddonGraphicSet.pawnRNProps)
                     {
-                        PawnRenderNode_FaceAddon renderNode = (PawnRenderNode_FaceAddon)Activator.CreateInstance(typeof(PawnRenderNode_FaceAddon), Pawn, props, Pawn.Drawer.renderer.renderTree);
-                        renderNode.Comp = this;
+                        PawnRenderNode_FaceAddon renderNode = (PawnRenderNode_FaceAddon)Activator.CreateInstance(typeof(PawnRenderNode_FaceAddon), Pawn, props, Pawn.Drawer.renderer.renderTree, this);
                         renderNode.CheckState(Pawn);
                         list.Add(renderNode);
                     }
                     return list;
                 }
+            }
+            else
+            {
+                Log.Warning("Comp_FaceAddon: raceAddonGraphicSet is null when call CompRenderNodes");
             }
 
             return base.CompRenderNodes();
@@ -64,6 +74,7 @@ namespace FaceAddon
 
         public override void CompTick()
         {
+            initTickCount--;
             base.CompTick();
             raceAddonGraphicSet?.UpdateTick();
         }
@@ -111,9 +122,10 @@ namespace FaceAddon
         public FaceStateType CurState;
         public BlinkStateType CurBlinkState;
         public new PawnRenderNodeProperties_FaceAddon Props => (PawnRenderNodeProperties_FaceAddon)props;
-        public PawnRenderNode_FaceAddon(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree)
+        public PawnRenderNode_FaceAddon(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, FaceAddonComp comp)
             : base(pawn, props, tree)
         {
+            Comp = comp;
             CurState = FaceStateType.Neutral;
             CurBlinkState = BlinkStateType.None;
             graphic = GraphicFor(pawn);
@@ -258,7 +270,7 @@ namespace FaceAddon
             //{
             //    return null;
             //}
-            return Props.addonRecord.GraphicAt(pawn, CurState, CurBlinkState, ColorFor(pawn), ColorForB(pawn));
+            return Props.addonRecord.GraphicAt(pawn, CurState, CurBlinkState, ColorFor(pawn), ColorForB(pawn), Comp.initTickCount > 0);
         }
     }
 
