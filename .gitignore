@@ -32,7 +32,6 @@ _ReSharper.*/
 *.tmp
 
 # 忽略编译器生成的文件
-*.dll
 *.exe
 *.cache
 

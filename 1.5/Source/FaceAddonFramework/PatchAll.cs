@@ -15,7 +15,7 @@ namespace FaceAddon
     {
         static HarmonyInit()
         {
-            new Harmony("kurin ex patch").PatchAll();
+            new Harmony("face addon framwork").PatchAll();
             if (!MP.enabled) return;
             MP.RegisterAll();
         }
