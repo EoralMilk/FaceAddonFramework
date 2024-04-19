@@ -336,10 +336,6 @@ namespace FaceAddon
         {
             this.main = c1;
             this.sub = c2;
-            if (forceneutral && faceStateType != FaceStateType.None)
-            {
-                return neutral;
-            }
 
             switch (faceStateType)
             {
@@ -347,6 +343,15 @@ namespace FaceAddon
                 case FaceStateType.Dead: return dead;
                 case FaceStateType.PainShocked: return painShock;
                 case FaceStateType.Sleeping: return sleeping;
+            }
+
+            if (forceneutral)
+            {
+                return neutral;
+            }
+
+            switch (faceStateType)
+            {
                 case FaceStateType.Damaged: return damaged;
                 case FaceStateType.Attacking: return attacking;
             }

@@ -45,11 +45,11 @@ namespace FaceAddon
 
         public override List<PawnRenderNode> CompRenderNodes()
         {
-            if (raceAddonGraphicSet == null && parent != null && (parent as Pawn is var pawn))
-            {
-                Pawn = parent as Pawn;
-                CreateOrUpdateGraphicSet();
-            }
+            //if (raceAddonGraphicSet == null && parent != null && (parent as Pawn is var pawn))
+            //{
+            //    Pawn = parent as Pawn;
+            //    CreateOrUpdateGraphicSet();
+            //}
 
             if (raceAddonGraphicSet != null)
             {
@@ -96,6 +96,12 @@ namespace FaceAddon
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            CreateOrUpdateGraphicSet();
+        }
+
+        public override void Initialize(CompProperties props)
+        {
+            base.Initialize(props);
             Pawn = parent as Pawn;
             CreateOrUpdateGraphicSet();
         }

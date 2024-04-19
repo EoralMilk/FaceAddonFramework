@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Multiplayer.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace FaceAddon
         static HarmonyInit()
         {
             new Harmony("kurin ex patch").PatchAll();
+            if (!MP.enabled) return;
+            MP.RegisterAll();
         }
     }
 }
