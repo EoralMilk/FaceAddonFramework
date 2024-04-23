@@ -41,16 +41,10 @@ namespace FaceAddon
 
         public RaceAddonGraphicSet raceAddonGraphicSet;
 
-        public int initTickCount = 15; // There is a strange phenomenon in 1.5 that causes characters to have mentalstate images when they are just init, use this to stop it!
+        public int initTickCount = 5; // There is a strange phenomenon in 1.5 that causes characters to have mentalstate images when they are just init, use this to stop it!
 
         public override List<PawnRenderNode> CompRenderNodes()
         {
-            //if (raceAddonGraphicSet == null && parent != null && (parent as Pawn is var pawn))
-            //{
-            //    Pawn = parent as Pawn;
-            //    CreateOrUpdateGraphicSet();
-            //}
-
             if (raceAddonGraphicSet != null)
             {
                 List<PawnRenderNode> list = new List<PawnRenderNode>();
@@ -91,6 +85,10 @@ namespace FaceAddon
             {
                 raceAddonGraphicSet = new RaceAddonGraphicSet(Pawn, Props, this);
             }
+            else
+            {
+                raceAddonGraphicSet.UpdateFaceDefByComp(Pawn, Props, this);
+            }
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -115,8 +113,7 @@ namespace FaceAddon
             Scribe_Values.Look(ref customColorSubA, "customColorSubA");
             Scribe_Values.Look(ref customColorBaseB, "customColorBaseB");
             Scribe_Values.Look(ref customColorSubB, "customColorSubB");
-
-            //CreateOrUpdateGraphicSet();
+            CreateOrUpdateGraphicSet();
         }
     }
 

@@ -13,7 +13,7 @@ namespace FaceAddon
     {
         public List<PawnRenderNodeProperties> pawnRNProps = new List<PawnRenderNodeProperties>();
         public List<FaceGraphicRecord> faceGraphics = new List<FaceGraphicRecord>();
-        public readonly WinkAndBlinkHandler WInkAndBlink;
+        public WinkAndBlinkHandler WInkAndBlink;
         public int LastDamageElapse;
         public readonly Pawn Pawn;
 
@@ -46,28 +46,6 @@ namespace FaceAddon
                     }
                 }
             }
-            if (comp.facetype != null)
-            {
-                comp.customColorBaseA = comp.customColorBaseA == Color.white ? (comp.facetype?.customColorsBase?.RandomColorInList() ?? Color.white) : comp.customColorBaseA;
-                comp.customColorSubA = comp.customColorSubA == Color.white ? (comp.facetype?.customColorsSub?.RandomColorInList() ?? Color.white) : comp.customColorSubA;
-
-                if (comp.facetype.Lower != null)
-                {
-                    var ftA = new FaceGraphicRecord(comp.facetype.Lower, comp.customColorBaseA, comp.customColorSubA);
-                    faceGraphics.Add(ftA);
-                }
-                if (comp.facetype.Upper != null)
-                {
-                    var ftB = new FaceGraphicRecord(comp.facetype.Upper, comp.customColorBaseA, comp.customColorSubA);
-                    faceGraphics.Add(ftB);
-                }
-                if (comp.facetype.Attach != null)
-                {
-                    var ftC = new FaceGraphicRecord(comp.facetype.Attach, comp.customColorBaseA, comp.customColorSubA);
-                    faceGraphics.Add(ftC);
-                }
-            }
-
 
             if (comp.additionalfacetype == null && faceprops.additionalfaceTypeDefs != null && faceprops.additionalfaceTypeDefs.Any())
             {
@@ -91,6 +69,34 @@ namespace FaceAddon
                         comp.additionalfacetype = idweights[i].Item2;
                         break;
                     }
+                }
+            }
+
+            UpdateFaceDefByComp(pawn, faceprops, comp);
+        }
+
+        public void UpdateFaceDefByComp(Pawn pawn, CompProperties_FaceAddonComps faceprops, FaceAddonComp comp)
+        {
+            faceGraphics.Clear();
+            if (comp.facetype != null)
+            {
+                comp.customColorBaseA = comp.customColorBaseA == Color.white ? (comp.facetype?.customColorsBase?.RandomColorInList() ?? Color.white) : comp.customColorBaseA;
+                comp.customColorSubA = comp.customColorSubA == Color.white ? (comp.facetype?.customColorsSub?.RandomColorInList() ?? Color.white) : comp.customColorSubA;
+
+                if (comp.facetype.Lower != null)
+                {
+                    var ftA = new FaceGraphicRecord(comp.facetype.Lower, comp.customColorBaseA, comp.customColorSubA);
+                    faceGraphics.Add(ftA);
+                }
+                if (comp.facetype.Upper != null)
+                {
+                    var ftB = new FaceGraphicRecord(comp.facetype.Upper, comp.customColorBaseA, comp.customColorSubA);
+                    faceGraphics.Add(ftB);
+                }
+                if (comp.facetype.Attach != null)
+                {
+                    var ftC = new FaceGraphicRecord(comp.facetype.Attach, comp.customColorBaseA, comp.customColorSubA);
+                    faceGraphics.Add(ftC);
                 }
             }
             if (comp.additionalfacetype != null)
