@@ -41,6 +41,16 @@ namespace FaceAddon
     //    }
     //}
 
+    [HarmonyPatch(typeof(PawnRenderer))]
+    [HarmonyPatch("ParallelGetPreRenderResults")]
+    public static class ForceDisableCachePatch
+    {
+        [HarmonyPrefix]
+        public static void ForceDisableCache(ref bool disableCache)
+        {
+            disableCache = true;
+        }
+    }
 
     [HarmonyPatch(typeof(Thing))]
     [HarmonyPatch("TakeDamage")]

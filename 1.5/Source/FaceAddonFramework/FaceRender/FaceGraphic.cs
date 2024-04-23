@@ -134,7 +134,8 @@ namespace FaceAddon
                 var nodeProps = new PawnRenderNodeProperties_FaceAddon()
                 {
                     baseLayer = 50 + fg.faceDef.layerOffset,
-                    visibleFacing = fg.faceDef.visibleFacing,
+                    useGraphic = true,
+                    //visibleFacing = fg.faceDef.visibleFacing, // when the pawn is crawling, the visiblefacing will not work correctly
                     //tagDef = PawnRenderNodeTagDefOf.Head,
                     //skipFlag = fg.faceDef.useSkipFlags,
                     addonRecord = fg,
@@ -174,6 +175,7 @@ namespace FaceAddon
         Damaged,
         PainShocked,
         Sleeping,
+        Ingest,
         Happy,
         Content,
         Neutral,
@@ -219,11 +221,15 @@ namespace FaceAddon
         public Graphic damaged => faceDef.damagedPath.GetGraphic(shader, main, sub, Vector2.one);
         public Graphic drafted => faceDef.draftedPath.GetGraphic(shader, main, sub, Vector2.one);
         public Graphic attacking => faceDef.attackingPath.GetGraphic(shader, main, sub, Vector2.one);
+        public Graphic ingest => faceDef.ingestPath.GetGraphic(shader, main, sub, Vector2.one);
+
         public Pair<CustomPath, Graphic> custom;
 
         public bool HasAttacking => !faceDef.attackingPath.NullOrEmpty();
         public bool HasDrafted => !faceDef.draftedPath.NullOrEmpty();
         public bool HasDamaged => !faceDef.damagedPath.NullOrEmpty();
+
+        public bool HasIngest => !faceDef.ingestPath.NullOrEmpty();
 
         public bool HasBlink => !faceDef.blinkPath.NullOrEmpty();
         public bool HasWink => !faceDef.winkPath.NullOrEmpty();
@@ -293,6 +299,10 @@ namespace FaceAddon
             {
                 return FaceStateType.Damaged;
             }
+            if (HasIngest && pawn.CurJobDef == JobDefOf.Ingest)
+            {
+                return FaceStateType.Ingest;
+            }
             if (HasDrafted && pawn.Drafted)
             {
                 return FaceStateType.Drafted;
@@ -354,6 +364,7 @@ namespace FaceAddon
             {
                 case FaceStateType.Damaged: return damaged;
                 case FaceStateType.Attacking: return attacking;
+                case FaceStateType.Ingest: return ingest;
             }
 
             switch (blinkStateType)

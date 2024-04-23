@@ -102,6 +102,8 @@ namespace FaceAddon
         public string damagedPath;
         [NoTranslate]
         public string attackingPath;
+        [NoTranslate]
+        public string ingestPath;
 
         public List<CustomPath> customs = new List<CustomPath>();
         Dictionary<MentalStateDef, string> mentalstats = new Dictionary<MentalStateDef, string>();
@@ -130,6 +132,8 @@ namespace FaceAddon
 
         public bool CanDrawAddon(PawnDrawParms parms)
         {
+            if (visibleFacing != null && !visibleFacing.Contains(parms.flipHead ? parms.facing.Opposite : parms.facing))
+                return false; // check facing by ourself
             if (parms.flags.FlagSet(PawnRenderFlags.HeadStump))
                 return false;
             if (!displayOnDessicated && parms.pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated)
