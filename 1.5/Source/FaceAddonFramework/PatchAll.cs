@@ -16,8 +16,8 @@ namespace FaceAddon
         static HarmonyInit()
         {
             new Harmony("face addon framwork").PatchAll();
-            if (!MP.enabled) return;
-            MP.RegisterAll();
+            //if (!MP.enabled) return;
+            //MP.RegisterAll();
         }
     }
 }

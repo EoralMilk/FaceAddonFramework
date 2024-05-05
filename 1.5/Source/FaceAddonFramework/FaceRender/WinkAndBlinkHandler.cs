@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace FaceAddon
@@ -21,6 +22,7 @@ namespace FaceAddon
         public readonly int maxTickForAnimation = 60;
 
         public readonly float winkChance = 0.2f;
+        public readonly System.Random random;
 
         public WinkAndBlinkHandler(int minBlinkTick, int maxBlinkTick, float winkChance, int minTickForAnimation, int maxTickForAnimation)
         {
@@ -29,7 +31,8 @@ namespace FaceAddon
             this.winkChance = winkChance;
             this.minTickForAnimation = minTickForAnimation;
             this.maxTickForAnimation = maxTickForAnimation;
-            nextDelay = Rand.RangeInclusive(minWaitTick, maxWaitTick);
+            random = new System.Random();
+            nextDelay = random.Next(minWaitTick, maxWaitTick);// .(minWaitTick, maxWaitTick);
         }
 
         public void Check(float mood)
@@ -40,8 +43,8 @@ namespace FaceAddon
                 if (nextDelay == 0)
                 {
                     // start animation
-                    tickForOverallAnimation = Rand.RangeInclusive(minTickForAnimation, maxTickForAnimation);
-                    if (Rand.Chance(winkChance * mood))
+                    tickForOverallAnimation = random.Next(minTickForAnimation, maxTickForAnimation);
+                    if (random.Next(0, 10000) <= (winkChance * mood * 10000))
                     {
                         WinkNow = true;
                     }
@@ -60,7 +63,7 @@ namespace FaceAddon
                     WinkNow = false;
                     BlinkNow = false;
                     currentTick = 0;
-                    nextDelay = Rand.RangeInclusive(minWaitTick, maxWaitTick);
+                    nextDelay = random.Next(minWaitTick, maxWaitTick);
                 }
             }
         }
