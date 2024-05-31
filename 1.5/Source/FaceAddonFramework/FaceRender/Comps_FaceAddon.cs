@@ -124,6 +124,8 @@ namespace FaceAddon
         public FaceAddonComp Comp;
         public FaceStateType CurState;
         public BlinkStateType CurBlinkState;
+        protected override bool EnsureInitializationWithoutRecache => true;
+
         public new PawnRenderNodeProperties_FaceAddon Props => (PawnRenderNodeProperties_FaceAddon)props;
         public PawnRenderNode_FaceAddon(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree, FaceAddonComp comp)
             : base(pawn, props, tree)
@@ -136,11 +138,9 @@ namespace FaceAddon
 
         protected override void EnsureMaterialsInitialized()
         {
-            if (CheckState(Comp.Pawn))
-            {
-                graphic = null;
-            }
+            CheckState(Comp.Pawn);
             base.EnsureMaterialsInitialized();
+            graphic = GraphicFor(Comp.Pawn);// Props.addonRecord.fixedGraphic != null ? Props.addonRecord.fixedGraphic : Props.addonRecord.neutral;
         }
 
         public bool CheckState(Pawn pawn)
@@ -257,24 +257,17 @@ namespace FaceAddon
             return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
         }
 
+        // 实际上这个东西基本只在GraphicsFor中使用，而GraphicsFor已经被重写，所以它没什么被调用的情况。只有我在这里自行调用了它。
         public override Graphic GraphicFor(Pawn pawn)
         {
-            //if (!pawn.health.hediffSet.HasHead)
-            //{
-            //    return null;
-            //}
-
-            //if (pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Dessicated && !Props.addonRecord.faceDef.displayOnDessicated)
-            //{
-            //    return null;
-            //}
-
-            //if (pawn.Drawer.renderer.CurRotDrawMode == RotDrawMode.Rotting && !Props.addonRecord.faceDef.displayOnRot)
-            //{
-            //    return null;
-            //}
             return Props.addonRecord.GraphicAt(pawn, CurState, CurBlinkState, ColorFor(pawn), ColorForB(pawn), Comp.initTickCount > 0);
         }
+
+        //protected override IEnumerable<Graphic> GraphicsFor(Pawn pawn)
+        //{
+        //    return Props.addonRecord.GetAllGraphics();
+        //}
+
     }
 
     public class PawnRenderNodeProperties_FaceAddon : PawnRenderNodeProperties

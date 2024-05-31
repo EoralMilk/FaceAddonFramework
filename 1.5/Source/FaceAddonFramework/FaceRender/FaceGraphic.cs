@@ -280,6 +280,34 @@ namespace FaceAddon
             return BlinkStateType.None;
         }
 
+        public List<Graphic> GetAllGraphics()
+        {
+            var list = new List<Graphic>();
+            if (fixedGraphic != null)
+            {
+                list.Add(fixedGraphic);
+                return list;
+            }
+
+            list.Add(aboutToBreak);
+            list.Add(onEdge);
+            list.Add(stressed);
+            list.Add(neutral);
+            list.Add(content);
+            list.Add(happy);
+            list.Add(sleeping);
+            list.Add(painShock);
+            list.Add(dead);
+            list.Add(blink);
+            list.Add(wink);
+            list.Add(damaged);
+            list.Add(drafted);
+            list.Add(attacking);
+            list.Add(ingest);
+
+            return list;
+        }
+
         public FaceStateType CheckState(Pawn pawn, RaceAddonGraphicSet raceAddonGraphicSet)
         {
             if (fixedGraphic != null)

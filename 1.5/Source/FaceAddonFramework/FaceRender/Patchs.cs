@@ -10,47 +10,17 @@ using Verse;
 
 namespace FaceAddon
 {
-    //[HarmonyPatch(typeof(PawnRenderTree))]
-    //[HarmonyPatch("SetupDynamicNodes")]
-    //public static class ResolveAllGraphics
+    //[HarmonyPatch(typeof(PawnRenderer))]
+    //[HarmonyPatch("ParallelGetPreRenderResults")]
+    //public static class ForceDisableCachePatch
     //{
-    //    [HarmonyPostfix]
-    //    public static void SetUp(PawnRenderTree __instance)
+    //    [HarmonyPrefix]
+    //    public static void ForceDisableCache(ref bool disableCache, Pawn ___pawn)
     //    {
-    //        Pawn pawn = __instance.pawn;
-    //        var faceprops = pawn.def.comps.FirstOrDefault(comp => comp is CompProperties_FaceAddonComps) as CompProperties_FaceAddonComps;
-    //        if (faceprops != null && pawn.story != null && pawn.story.headType != null)
-    //        {
-    //            var racomp = pawn.GetComp<FaceAddonComp>();
-    //            if (racomp.raceAddonGraphicSet == null)
-    //            {
-    //                racomp.raceAddonGraphicSet = new RaceAddonGraphicSet(pawn, faceprops, racomp);
-    //            }
-
-    //            List<PawnRenderNode> pawnRenderNodes = new List<PawnRenderNode>();
-    //            foreach (var fg in racomp.raceAddonGraphicSet.faceGraphics)
-    //            {
-    //                PawnRenderNode_FaceAddon renderNode = new PawnRenderNode_FaceAddon(pawn, new PawnRenderNodeProperties_FaceAddon(), __instance,
-    //                    racomp.raceAddonGraphicSet, fg);
-
-    //                pawnRenderNodes.Add(renderNode);
-    //            }
-
-    //            __instance.rootNode.AddChildren(pawnRenderNodes.ToArray());
-    //        }
+    //        if (___pawn.def.IsFaceAddonRaceDef())
+    //            disableCache = true;
     //    }
     //}
-
-    [HarmonyPatch(typeof(PawnRenderer))]
-    [HarmonyPatch("ParallelGetPreRenderResults")]
-    public static class ForceDisableCachePatch
-    {
-        [HarmonyPrefix]
-        public static void ForceDisableCache(ref bool disableCache)
-        {
-            disableCache = true;
-        }
-    }
 
     [HarmonyPatch(typeof(Thing))]
     [HarmonyPatch("TakeDamage")]
